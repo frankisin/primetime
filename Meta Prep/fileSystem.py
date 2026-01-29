@@ -96,7 +96,48 @@ def solution(queries):
                 
                 del files[filepath]
                 out.append(str(filesize))
-               
+        elif op == "MOVE_FILE":
+            requestor = q[1]
+            srcpath = q[2]
+            destpath = q[3]
+
+            if srcpath not in files or destpath in files:
+                out.append("false")
+                continue
+            if not user_exists(requestor):
+                out.append("false")
+                continue
+       
+            if files[srcpath][1] == requestor or requestor == "admin":
+                # we can continue..
+                (size,owner) = files[srcpath]
+                files[destpath] = (size,owner)
+                del files[srcpath]
+                out.append("true")
+                continue
+            out.append("false")
+        
+    return out 
+            
+queries = [
+    ["ADD_USER", "alice", "20"],
+    ["ADD_FILE", "alice", "/docs/a.txt", "10"],
+    ["ADD_FILE", "alice", "/docs/b.txt", "7"],
+    ["FIND_FILES", "/docs", ".txt"],
+    ["MOVE_FILE", "alice", "/docs/b.txt", "/docs/c.txt"],
+    ["GET_FILE_SIZE", "/docs/c.txt"],
+    ["UPDATE_CAPACITY", "alice", "12"],
+    ["DELETE_FILE", "/docs/a.txt"],
+    ["UPDATE_CAPACITY", "alice", "12"]
+]
+
+print(solution(queries))
+
+
+
+
+            
+
                 
             
                 
