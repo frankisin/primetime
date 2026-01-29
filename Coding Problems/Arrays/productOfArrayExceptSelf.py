@@ -1,0 +1,2 @@
+def productExceptSelf(nums):
+    pass
