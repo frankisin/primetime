@@ -1,0 +1,38 @@
+1) INIT capacity
+
+Initializes the cache with a maximum size.
+Capacity is a positive integer.
+This operation is guaranteed to be called first.
+
+Return: "true".
+
+2) PUT key value
+
+Adds or updates a key-value pair.
+Behavior:
+If key already exists:
+Update its value
+Mark it as most recently used
+If key does not exist:
+Insert it
+Mark it as most recently used
+If inserting causes cache size to exceed capacity:
+Evict the least recently used key
+
+Return: "true"
+
+3) GET key
+
+Retrieves the value for key.
+Behavior:
+If key exists:
+Return: its value
+
+Mark it as most recently used
+If key does not exist:
+
+Return: "" (empty string)
+
+Output Rules
+Each query produces one output string
+Outputs must be returned in order
