@@ -1,0 +1,79 @@
+Practice Problem: Log Aggregator (Rolling Window + TopK)
+
+You are building an in-memory log aggregation system.
+You will process a list of queries in order. Each query returns a string.
+Each log event has:
+time (integer timestamp)
+userId (string)
+eventType (string)
+The system must support:
+recording events
+counting events in a rolling time window
+returning top event types within a window
+Core rule: rolling window
+For any query at time t with window W, events are counted if they occurred in:
+(t - W, t]
+Meaning:
+include events with time <= t
+exclude events with time <= t - W
+So events exactly at t - W are not counted.
+
+Operations
+1) INIT windowSeconds
+
+Sets the global window size W (positive integer).
+This will be called once at the beginning.
+Return: "true"
+
+2) LOG time userId eventType
+Records an event.
+Return: "true"
+Notes:
+You must store enough information to support later queries.
+Events may arrive not strictly sorted by time (assume mostly increasing but don’t rely on it).
+
+3) COUNT time eventType
+Return how many events of type eventType occurred in the window (time - W, time].
+Return: count as a string (e.g., "0", "5")
+
+4) COUNT_USER time userId
+Return how many total events (any type) for userId occurred in the window (time - W, time].
+Return: count as a string
+
+5) TOP time k
+Return the top k event types in the window (time - W, time], sorted by:
+count descending
+eventType ascending (lexicographic) as a tiebreaker
+Format:
+"eventType(count)" joined by commas
+If fewer than k types exist, return all of them.
+If no events in window, return "" (empty string).
+
+Example output:
+"click(4),view(2),login(2)"
+Output
+Return an array of strings, one per query in order.
+
+Example Queries
+INIT 10
+LOG 1 alice login
+LOG 2 alice view
+LOG 3 bob view
+LOG 4 alice click
+LOG 6 alice click
+COUNT 6 click
+COUNT_USER 6 alice
+TOP 6 3
+TOP 12 3
+
+Expected outputs
+"true"
+"true"
+"true"
+"true"
+"true"
+"true"
+"2"
+"4"
+"click(2),login(1),view(2)" WAIT (tie rules matter—see note below)
+""
