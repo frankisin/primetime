@@ -1,0 +1,66 @@
+
+Practice: Cloud Storage File System (CodeSignal-style)
+You’re implementing an in-memory cloud storage system. Each file has:
+* a path (string, unique), like "/docs/a.txt"
+* a size (int)
+* an owner userId (string)
+Each user has a capacity limit (int). The system also has a special admin user with infinite capacity.
+You must process queries (operations) and return outputs per query.
+Operations
+1) ADD_USER userId capacity
+* Create a user with given capacity.
+* If user already exists: return "false", else "true".
+2) ADD_FILE userId path size
+* Adds a file owned by userId at path with size.
+* Fails if:
+    * userId doesn’t exist (except "admin" which always exists)
+    * path already exists
+    * user would exceed capacity (admin exempt)
+* Return "true" or "false".
+3) DELETE_FILE path
+* Deletes the file if it exists.
+* Return deleted file size as string, or "false" if missing.
+4) GET_FILE_SIZE path
+* Return size as string, or "false" if missing.
+5) MOVE_FILE userId sourcePath destPath
+* Move/rename a file from sourcePath to destPath.
+* Fails if:
+    * file doesn’t exist
+    * destPath already exists
+    * requester userId is neither "admin" nor the file’s owner
+* Size/owner do not change.
+* Return "true" or "false".
+6) FIND_FILES prefix suffix
+* Find all files where path starts with prefix AND ends with suffix.
+* Output format:
+    * Sort by size desc, then path asc
+    * Return a comma-separated list of: path(size)
+    * If none, return empty string ""
+* Example: "/docs/a.txt(10),/docs/b.txt(7)"
+7) UPDATE_CAPACITY userId newCapacity
+* Update capacity for an existing user (admin ignored / can be treated as infinite).
+* If user doesn’t exist: return "false".
+* If user’s current used space > newCapacity: return "false" (do not change capacity).
+* Else set it and return "true".
+
+Example Input / Output
+Queries
+1. ADD_USER alice 20
+2. ADD_FILE alice /docs/a.txt 10
+3. ADD_FILE alice /docs/b.txt 7
+4. FIND_FILES /docs .txt
+5. MOVE_FILE alice /docs/b.txt /docs/c.txt
+6. GET_FILE_SIZE /docs/c.txt
+7. UPDATE_CAPACITY alice 12
+8. DELETE_FILE /docs/a.txt
+9. UPDATE_CAPACITY alice 12
+Outputs
+1. "true"
+2. "true"
+3. "true"
+4. "/docs/a.txt(10),/docs/b.txt(7)"
+5. "true"
+6. "7"
+7. "false" (alice currently uses 17)
+8. "10"
+9. "true" (now uses 7 ≤ 12)
