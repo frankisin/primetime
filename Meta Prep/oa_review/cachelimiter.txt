@@ -1,0 +1,123 @@
+1) INIT limit windowSeconds
+Initializes the rate limiter settings.
+You’ll get this once at the beginning (assume valid).
+Return "true".
+
+2) SET userId time key value ttlSeconds
+Sets cache[key] = value and expiration:
+expiresAt = time + ttlSeconds
+Fails if:
+user exceeds rate limit at that time (admin exempt)
+Return:
+"true" if stored
+"false" if rate-limited
+
+Notes:
+Setting an existing key overwrites value + expiration if allowed.
+
+3) GET time key
+Returns the cached value if present and unexpired.
+If missing or expired: return "" (empty string)
+Else: return stored value
+4) DELETE userId time key
+Deletes key if it exists and is unexpired at time.
+Fails if:
+user is rate-limited at time (admin exempt)
+
+Return:
+"true" if a valid key was deleted
+"false" otherwise (rate-limited OR key missing/expired)
+
+Important:
+If the key is expired at time, treat as missing and return "false" (but still rate-limit check happens first).
+5) COUNT time
+Returns the number of unexpired keys at time as a string.
+Example: "3"
+Rate-limit definition (important)
+
+A user is allowed a write at time t if they have performed fewer than limit writes in the interval:
+
+(t - windowSeconds, t]
+
+Meaning:
+include timestamps <= t
+exclude timestamps <= t - windowSeconds
+(So exactly t - windowSeconds is not counted.)
+
+Implementation hint: store per-user write timestamps in a queue and pop old ones.
+
+Output
+Return a list of strings, one result per query, in order.
+
+Example (so you can verify your code)
+Queries
+INIT 2 10
+SET alice 1 k1 v1 5
+SET alice 2 k2 v2 100
+SET alice 3 k3 v3 100
+GET 3 k1
+GET 7 k1
+DELETE alice 8 k2
+COUNT 9
+SET alice 11 k3 v3b 100
+GET 12 k3
+
+Expected outputs
+
+"true"
+
+"true"
+
+"true"
+
+"false" (alice already did 2 writes in last 10 seconds)
+
+"v1" (still valid: expires at 6)
+
+"" (expired at time 7)
+
+"false" (rate-limited: writes at 1 and 2 are in ( -2, 8 ] )
+
+"1" (k2 exists, k1 expired, k3 never set because rate-limited)
+
+"true" (writes at 1 and 2 fall out of window for time 11)
+
+"v3b"
+
+                 ┌─────────────────────────┐
+                 │  operation = SET/DELETE │
+                 └─────────────┬───────────┘
+                               │
+                               v
+                 ┌─────────────────────────┐
+                 │ if userId == "admin"?   │
+                 └─────────────┬───────────┘
+                       yes     │      no
+                        │      v
+                        │  ┌──────────────────────┐
+                        │  │ get dq = writes[user]│
+                        │  │ if missing, dq = []  │
+                        │  └───────────┬──────────┘
+                        │              │
+                        │              v
+                        │  ┌─────────────────────────────┐
+                        │  │ cutoff = time - window      │
+                        │  │ while dq[0] <= cutoff: pop  │
+                        │  └───────────┬─────────────────┘
+                        │              │
+                        │              v
+                        │  ┌─────────────────────────────┐
+                        │  │ if len(dq) >= limit:        │
+                        │  │    reject -> "false"        │
+                        │  └───────────┬─────────────────┘
+                        │              │ allowed
+                        │              v
+                        │  ┌─────────────────────────────┐
+                        │  │ dq.append(time)             │
+                        │  └───────────┬─────────────────┘
+                        │              │
+                        v              v
+            ┌────────────────────────────────────┐
+            │ perform cache mutation (SET/DELETE)│
+            │ return "true" if operation succeeded│
+            └────────────────────────────────────┘

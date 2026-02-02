@@ -39,13 +39,14 @@ def solution(queries):
             capacityUsed = used[userId]
             capacity = users[userId]
 
-            if userId != "admin" (size + capacityUsed > capacity):
+            if userId != "admin" and (size + capacityUsed > capacity):
                 out.append("false")
                 continue
 
             files[path] = (size,userId)
-            used[userId] += size
-            out.append("false")
+            if userId != "admin":
+                used[userId] += size
+            out.append("true")
         elif op == "DELETE_FILE": #path
             path = q[1] 
 
