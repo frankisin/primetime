@@ -1,0 +1,99 @@
+Practice Problem: Permissions / RBAC System
+
+You are implementing an in-memory role-based access control (RBAC) system.
+Process a list of queries in order. Each query returns a string.
+
+The system starts with no users, no roles, and no permissions.
+
+Core Concepts
+Users have zero or more roles
+Roles have zero or more permissions
+Permissions are strings (e.g., "READ", "WRITE", "DELETE")
+A user is allowed to perform an action if any of their roles grants that permission
+An operation that fails must not change state
+
+Operations
+1) CREATE_ROLE roleName
+Create a new role.
+Return:
+"true" if the role is created
+"false" if the role already exists
+
+2) ADD_PERMISSION roleName permission
+Assign a permission to a role.
+Rules:
+The role must exist
+Adding the same permission twice is not allowed
+Return:
+"true" if added
+"false" if role does not exist OR permission already exists for the role
+
+3) CREATE_USER userId
+Create a new user.
+Return:
+"true" if created
+"false" if user already exists
+
+4) ASSIGN_ROLE userId roleName
+Assign a role to a user.
+Rules:
+User and role must exist
+A user cannot have the same role twice
+Return:
+"true" if assigned
+"false" if user does not exist OR role does not exist OR role already assigned
+
+5) REMOVE_ROLE userId roleName
+Remove a role from a user.
+Rules:
+User and role must exist
+User must already have the role
+
+Return:
+"true" if removed
+"false" otherwise
+
+6) CHECK_PERMISSION userId permission
+Check whether a user has a permission.
+Rules:
+User must exist
+User has a permission if any assigned role grants it
+Return:
+"true" if user has permission
+"false" otherwise
+
+7) LIST_PERMISSIONS userId
+List all permissions available to a user.
+Rules:
+User must exist
+Permissions should be:
+unique
+sorted lexicographically
+
+Return:
+Comma-separated permission list (e.g. "DELETE,READ,WRITE")
+"" if user has no permissions
+"false" if user does not exist
+
+Output
+Return a list of strings — one per query — in the same order as the input.
+
+Example
+Queries
+
+CREATE_ROLE admin
+ADD_PERMISSION admin READ
+ADD_PERMISSION admin WRITE
+CREATE_USER alice
+ASSIGN_ROLE alice admin
+CHECK_PERMISSION alice WRITE
+LIST_PERMISSIONS alice
+
+Outputs
+"true"
+"true"
+"true"
+"true"
+"true"
+"true"
+"READ,WRITE"
