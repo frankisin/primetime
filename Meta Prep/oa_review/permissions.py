@@ -57,6 +57,67 @@ def solution(queries):
 
             user_roles.add(roleName)
             out.append("true")
+        elif op == "REMOVE_ROLE": #userId roleName
+            userId = q[1]
+            roleName = q[2]
+
+            if userId not in users or roleName not in roles:
+                out.append("false")
+                continue 
+
+            user_roles = users[userId]
+
+            if roleName not in user_roles:
+                out.append("false")
+                continue 
+
+            user_roles.remove(roleName)
+            out.append("true")
+        elif op == "CHECK_PERMISSION": #userId permission
+            userId = q[1]
+            permission = q[2]
+            fetched_permissions = set()
+
+            if userId not in users:
+                out.append("false")
+                continue
+            
+            user_roles = users[userId]
+
+            for role in user_roles:
+                perms = roles[role]
+                fetched_permissions.update(perms)
+            
+            if permission not in fetched_permissions:
+                out.append("false")
+                continue
+            out.append("true")
+        elif op == "LIST_PERMISSIONS": #userId
+            userId = q[1]
+            fetched_permissions = set()
+
+            if userId not in users:
+                out.append("false")
+                continue
+
+            user_roles = users[userId]
+
+            if len(user_roles) == 0:
+                out.append("")
+                continue
+
+            for role in user_roles:
+                perms = roles[role]
+                fetched_permissions.update(perms)
+            
+            res = list(fetched_permissions)
+
+            res.sort()
+            out.append(",".join(res))
+
+
+
+
 
 
 
