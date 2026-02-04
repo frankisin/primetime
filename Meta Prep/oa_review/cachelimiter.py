@@ -1,10 +1,10 @@
 from collections import deque 
 def solution(queries):
-    cache = {} # key(str) : (value(str) : expiredAt (int))
-    writes = {} # userId (str): time (int)
-    
+    cache = {} #key(str) : (value(str) : expiresAt(int))
+    writes = {}#userId(str) : deque(int)
+
     limit = None
-    window = None 
+    window = None
     
     out = []
 
@@ -109,12 +109,12 @@ def solution(queries):
                 del cache[key]       
             out.append(str(count))
         
-        if op == "INIT": #limit windowSeconds
+        if op == "__INIT": #limit windowSeconds
             limit = int(q[1])
             window = int(q[2])
             
             out.append("true")
-        elif op == "SET": #userId time key value ttlSeconds
+        elif op == "__SET": #userId time key value ttlSeconds
             userId = q[1]
             time = int(q[2])
             key = q[3]
@@ -141,7 +141,7 @@ def solution(queries):
                 dq.append(time)
             cache[key] = (value,expiresAt)
             out.append("true")
-        elif op == "DELETE": #userId time key
+        elif op == "__DELETE": #userId time key
             userId = q[1]
             time = int(q[2])
             key = str(q[3])
@@ -175,7 +175,7 @@ def solution(queries):
                 
             del cache[key]
             out.append("true")
-        elif op == "GET": #time key
+        elif op == "__GET": #time key
             time = int(q[1])
             key = str(q[2])
             
@@ -191,7 +191,7 @@ def solution(queries):
                 continue
             
             out.append(str(value))
-        elif op == "COUNT": #time
+        elif op == "__COUNT": #time
             time = int(q[1])
             count = 0
             deleted_key = []
@@ -208,7 +208,92 @@ def solution(queries):
                 del cache[key]
             
             out.append(str(count))
+        
+        if op == "INIT":#limit windowSeconds:
+            limit = int(q[1])
+            window = int(q[2])
+
+            out.append("true")
+
+        elif op == "SET": #userId time key value ttlSeconds
+            userId = q[1]
+            time = int(q[2])
+            key = q[3]
+            value = q[4]
+            ttlSeconds = int(q[5])
+
+            expiresAt = time + ttlSeconds
+            if userId != "admin":
+
+                if userId not in writes:
+                    writes[userId] = deque()
+
+                dq = writes[userId]
+
+                cutoff = time - window 
+
+                #purge writes 
+                while dq and dq[0] <= cutoff:
+                    dq.popleft()
+                #enforce limit 
+                if len(dq) >= limit:
+                    out.append("false")
+                    continue 
+                dq.append(time)
             
+            cache[key] = (value,expiresAt)
+            out.append("true")
+        elif op == "DELETE": #userId time key
+            userId = q[1]
+            time = int(q[2])
+            key = q[3]
+
+            if userId != "admin":
+                if userId not in writes:
+                    writes[userId] = deque()
+                
+                dq = writes[userId]
+
+                cutoff = time - window
+
+                while dq and dq[0] <= cutoff:
+                    dq.popleft()
+
+                if len(dq) >= limit:
+                    out.append("false")
+                    continue
+
+                dq.append(time)
+
+            if key not in cache:
+                out.append("false")
+                continue 
+
+            (value,expiresAt) = cache[key]
+
+            if expiresAt <= time:
+                out.append("false")
+                del cache[key]
+                continue
+
+            del cache[key]
+            out.append("true")
+        elif op == "GET": #time key
+            time = int(q[1])
+            key = q[2]
+
+            if key not in cache:
+                out.append("false")
+                continue 
+
+            (value,expiredAt) = cache[key]
+            if expiredAt <= time:
+                out.append("false")
+                del cache[key]
+                continue
+            out.append(str(value))
+        elif op == "COUNT": #time
+            pass
                     
                     
                     
