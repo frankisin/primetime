@@ -16,26 +16,28 @@ def solution(queries):
             self.head.next = self.tail
             self.tail.prev = self.head
         
-        def remove(node):
-            prev_node = node.prev
+        def remove(self,node):
             next_node = node.next
-
-            prev_node.next = next_node
+            prev_node = node.prev
+            
             next_node.prev = prev_node
+            prev_node.next = next_node
         def insert(self,node):
-            node.prev = self.head
             node.next = self.head.next
-
+            node.prev = self.head
+            
             self.head.next.prev = node
-            self.head.next = node 
-
+            self.head.next = node
+            
         def get(self,key):
             if key in self.cache:
                 node = self.cache[key]
                 value = node.val
-                self.insert(node)
+                
+                
                 self.remove(node)
-
+                self.insert(node) #remove node and make it mru
+                
                 return value
             else:
                 return ""

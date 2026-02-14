@@ -18,11 +18,13 @@ def solution(queries):
             capacity = int(q[2])
 
             if not user_exists(userId):
-                out.append("false")
-            else:
+                
                 users[userId] = capacity
                 used[userId] = 0 
                 out.append("true")
+            else:
+                out.append("false")
+                
         elif op == "_ADD_FILE": #userId,path,size
             userId = q[1]
             path = q[2]
