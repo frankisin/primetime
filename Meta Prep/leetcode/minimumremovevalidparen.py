@@ -1,8 +1,8 @@
-def minRemoveToMakeValid(self, s: str) -> str:
+def minRemoveToMakeValid(s: str) -> str:
     stack = [] #
     remove = set() # store indices of chars to be removed...
     clean = []
-    output = ""
+    
     for i in range(len(s)):
         if s[i] == '(':
             stack.append(i) # append index to the stack
