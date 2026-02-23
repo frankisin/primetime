@@ -2,7 +2,7 @@ def longestBalanced(self, s) -> int:
     n = len(s)
     best = 0 
     
-    for i in range(s):
+    for i in range(n):
         freq = [0] * 26
         
         for j in range(i,n):
@@ -21,5 +21,5 @@ def longestBalanced(self, s) -> int:
                         mx = c
             
             if distinct > 0 and mn == mx:
-                best = max(best,j-1+1)
+                best = max(best,j-i+1)
     return best 
