@@ -4,7 +4,7 @@ def verticalTraversal(root):
     if not root:
         return []
     
-    tree_map = defaultdict(list)
+    tree_map = defaultdict(list) # {column : [1,4,5]}
     
     queue = deque([(root,0)]) # node, col...
     

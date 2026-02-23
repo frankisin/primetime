@@ -1,15 +1,14 @@
 from collections import defaultdict
 def twosum(nums,target):
-    d = defaultdict(int)
+    d = {} # int : index
 
-    for i,num in enumerate(nums):
-        complement = target - num
+    for i in range(len(nums)):
+        complement = target - nums[i]
 
         if complement in d:
             return [d[complement],i]
-        else:
-            d[num] = i 
-    return []
+        
+        d[nums[i]] = i 
+
+    return [-1,-1]
     
-
-
