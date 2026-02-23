@@ -12,7 +12,7 @@ class Solution:
     def backtrack(self,n,k,idx,curr):
         if len(curr) == k:
             self.res.append(curr.copy())
-            return 
+            return
         
         
         for i in range(idx,n+1):
