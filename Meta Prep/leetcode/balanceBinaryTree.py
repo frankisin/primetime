@@ -1,27 +1,28 @@
-def isBalanced(root)->bool:
-    def height(node):
-        if node is None:
-            return 0
-        
-        left = height(node.left)
-        if left == -1:
-            return -1 
-        
-        right = height(node.right)
-        if right == -1:
-            return -1 
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
 
-        if abs(left-right) > 1:
-            return -1 
+class Solution:
+    def balanceBST(self,root):
+        vals = []
         
-        return 1 + max(left,right)
-    
-    def height_(node):
-        if node is None:
-            return 0
+        def inorder(node):
+            if not node:
+                return
+            inorder(node.left)
+            vals.append(node.val)
+            inorder(node.right)
         
-        left = height(node.left)
-        right = height(node.right)
+        def build(l,r):
+            if l > r:
+                return None 
+            m = (l + r) // 2 # in the sorted array we build from the middle 
+            node = TreeNode(vals[m])
+            node.left = build(l,m-1)
+            node.rihgt = build(m+1,r)
+            return node 
 
-        return 1 + max(left,right)
-        
+        inorder(root)
+        return build(0,len(vals)-1)
