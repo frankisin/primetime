@@ -1,32 +1,18 @@
 def longestPalindromicSub(s):
-    longestSub = []
+    best_left = best_right = 0 
 
-    def substring(s):
-        substrings = []
-        for i in range(len(s) + 1):
-            for j in range(i):
-                sub = s[j:i]
-                substrings.append(sub)
-        return substrings
+    def expand(left,right):
+        nonlocal best_left,best_right
+
+        while left >= 0 and right < len(s) and s[left] == s[right]:
+            #update best before moving 
+            if right - left > best_right - best_left:
+                best_right = right
+                best_left = left
+            left -= 1
+            right += 1
     
-    def isPalindrome(s):
-        if len(s) == 0:
-            return False
-        mid = int(len(s) // 2)
-
-        for i in range(0,mid):
-            if s[i] != s[len(s)-i-1]:
-                return False
-        return True 
-    
-    subs = substring(s)
-
-    for sub in subs:
-        if isPalindrome(sub):
-            if len(sub) > len(longestSub):
-                longestSub = sub
-    return longestSub
-
-
-
-
+    for i in range(len(s)):
+        expand(i,i)
+        expand(i,i+1)
+    return [s[best_left:best_right+1]]
