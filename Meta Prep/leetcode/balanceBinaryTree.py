@@ -21,7 +21,7 @@ class Solution:
             m = (l + r) // 2 # in the sorted array we build from the middle 
             node = TreeNode(vals[m])
             node.left = build(l,m-1)
-            node.rihgt = build(m+1,r)
+            node.right = build(m+1,r)
             return node 
 
         inorder(root)
