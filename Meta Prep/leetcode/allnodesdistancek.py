@@ -28,6 +28,7 @@ class Solution:
         
         res = []
         visited = set([target])
+        queue = collections.deque([(target,0)])
 
         while queue:
             node,distance = queue.popleft()

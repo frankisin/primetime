@@ -7,7 +7,7 @@ class TreeNode:
                
 class Solution:
     def isSameTree(self, p, q) -> bool:
-        if not p and not q: # If the trees are not empty in the same places return false 
+        if not p and not q: # If the trees are not empty in the same places return true  
             return True 
         if not p or not q: 
             return False  

@@ -8,7 +8,7 @@ def verticalTraversal(root):
     
     queue = deque([(root,0)]) # node, col...
     
-    min_col = max_col = 0 
+    min_col = max_col = 0
     
     while queue:
         node,col = queue.popleft()
