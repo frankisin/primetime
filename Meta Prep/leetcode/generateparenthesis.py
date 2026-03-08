@@ -18,4 +18,4 @@ def generateParenthesis(n:int):
     backtrack(0,0,[])
     return res
         
-
+print(generateParenthesis(3))
