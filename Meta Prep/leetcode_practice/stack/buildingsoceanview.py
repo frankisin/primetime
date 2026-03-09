@@ -10,10 +10,3 @@ def findBuildings(heights):
             res.append(i)
             max_height = height 
     return res[::-1]
-
-
-        
-        
-        
-    
-    
