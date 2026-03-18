@@ -1,5 +1,7 @@
-def sumSubArrayPrefixSum(nums):
+def sumSubArrayPrefixSum(nums,k):
     n = len(nums)
+
+    res = []
 
     prefixes = [0] * (n + 1)
 
@@ -10,5 +12,8 @@ def sumSubArrayPrefixSum(nums):
 
     for l in range(n):
         for r in range(l,n):
-            total += prefixes[r+1] - prefixes[l]
+            if prefixes[r+1] - prefixes[l] == k:
+                total += 1
+    return total 
+
 
