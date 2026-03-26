@@ -19,6 +19,3 @@ class Solution:
 
                 ships += 1
         return ships 
-
-
-        
