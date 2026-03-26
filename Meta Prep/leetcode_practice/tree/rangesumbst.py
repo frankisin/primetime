@@ -14,6 +14,4 @@ def rangeSumBST(root,low:int,high:int):
             dfs(node.right)
     dfs(root)
     return sum(output)
-        
-            
-    
+
