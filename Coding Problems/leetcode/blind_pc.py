@@ -302,7 +302,7 @@ class blind:
                 i -= 1
             k -= 1
     def palindromicsubs(s:str)->int:
-        count = 0 
+        count = 0
         
         def expand(l,r):
             nonlocal count
@@ -315,7 +315,7 @@ class blind:
             expand(i,i)
             expand(i,i+1)
         
-        return count 
+        return count
     def kthmissingnumber(nums,k)->int:
         left = 0 
         right = len(nums)-1
@@ -327,7 +327,7 @@ class blind:
             if missing < k:
                 left = mid + 1
             else:
-                right = mid - 1041
+                right = mid - 1
             
         return left + k 
     def lowestcommonancestor3(p,q):
@@ -639,7 +639,7 @@ class blind:
         
         return dummy.next 
     def removeduplicatessortedarr(nums):
-        k = 1
+        k = 1 # k is placed at 1 because it is the first unique element
 
         for i in range(1,len(nums)):
             if nums[i] != nums[k-1]:
@@ -932,3 +932,121 @@ class blind:
                 continue 
             stack.append(ch)
         return "".join(stack)
+    
+    def makingLargeIsland(self,grid):
+        directions = [(-1,0),(0,1),(-1,0),(0,-1)]
+        island_id = -1
+        island_map = {}
+        
+        max_area = 0 
+        
+        n = len(grid)
+        m = len(grid[0])
+        
+        def dfs(grid,row,col):
+            if 0 <= row < n and 0 <= col < m and grid[m][n] == "1":
+                #set the island id
+                grid[m][n] = island_id
+                
+                #calculate area...
+                area = 1
+                
+                for dr,dc in directions:
+                    nr = row + dr
+                    nc = col + dc 
+                    
+                    area += dfs(grid,nr,nc)
+            else:
+                return 0 
+                    
+        for row in range(len(grid)):
+            for col in range(len(grid[0])):
+                if grid[row][col] == "1":
+                    island_area = dfs(grid,row,col)
+                    island_map[island_id] = island_area
+                    island_id -= 1
+        
+        for r in range(n):
+            for c in range(m):
+                if grid[r][c] == "0":
+                    area = 1
+                    
+                    surrounding = set()
+                    
+                    for dr,dc in directions:
+                        nr = r + dr
+                        nc = c + dc 
+                    
+                        #if surrounding is in bounds...
+                        if 0 <= nr < n and 0 <= nc < m and grid[nr][nc] != "0":
+                            surrounding.add(grid[nr][nc])
+                    
+                    for island_id in surrounding:
+                        area += island_map[island_id]
+                    
+                    max_area = max(max_area,area)
+    def makinglargeisland(self,grid):
+        m = len(grid) 
+        n = len(grid[0])
+        
+        island_id = -1
+        island_map = {}
+        
+        directions = [(-1,0),(0,1),(-1,0),(0,-1)]   
+        
+        for r in range(m):
+            for c in range(n):
+                if grid[m][n] == "1":
+                    island_area = dfs(r,c)
+                    island_map[island_id] = island_area
+                    island_id -= 1
+        
+        def dfs(grid,r,c):
+            if 0 <= r < m and 0 <= c < n and grid[r][c] == "1":
+                grid[r][c] = island_id
+                
+                area = 1
+                
+                for dr,dc in directions:
+                    nr = r + dr
+                    nc = c + dc 
+                    
+                    area += dfs(grid,nr,nc)
+
+                return area 
+            else:
+                return 0 
+        
+        max_area = 0 
+        for r in range(m):
+            for c in range(n):
+                if grid[r][c] == "0":
+                    area = 1
+                    
+                    surrounding = set()
+                    
+                    for dr,dc in directions:
+                        nr = r + dr
+                        nc = c + dc 
+                        
+                        if 0 <= nr < m and 0 <= nc < n and grid[nr][nc] != "0":
+                            surrounding.add(grid[nr][nc])
+                    
+                    for island_id in surrounding:
+                        area += island_map[island_id]
+
+                    max_area = max(max_area,area)
+        return max_area
+                    
+                    
+        
+    
+                    
+                
+                         
+    
+        
+        
+        
+        
+        
